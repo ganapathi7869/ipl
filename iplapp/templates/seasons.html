@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>seasons</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bulma.css' %}">
+    <style>
+    .dropbtn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {background-color: #f1f1f1}
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown:hover .dropbtn {
+      background-color: #3e8e41;
+    }
+    </style>
+</head>
+<body>
+
+<div class="dropdown">
+  <button class="dropbtn">Seasons</button>
+  <div class="dropdown-content">
+      <a href="{% url 'seasonyear' 2019 %}">2019</a>
+      <a href="{% url 'seasonyear' 2018 %}">2018</a>
+      <a href="{% url 'seasonyear' 2017 %}">2017</a>
+      <a href="{% url 'seasonyear' 2016 %}">2016</a>
+      <a href="{% url 'seasonyear' 2015 %}">2015</a>
+      <a href="{% url 'seasonyear' 2014 %}">2014</a>
+      <a href="{% url 'seasonyear' 2013 %}">2013</a>
+      <a href="{% url 'seasonyear' 2012 %}">2012</a>
+      <a href="{% url 'seasonyear' 2011 %}">2011</a>
+      <a href="{% url 'seasonyear' 2010 %}">2010</a>
+      <a href="{% url 'seasonyear' 2009 %}">2009</a>
+      <a href="{% url 'seasonyear' 2008 %}">2008</a>
+  </div>
+</div>
+<!--page------------------------------------->
+<table style="width:100%">
+  <caption><h1>Season {{year}}</h1></caption>
+  <tr>
+    <th>Team1</th>
+    <th>Team2</th>
+    <th>Venue</th>
+    <th>Toss Winner</th>
+    <th>Toss Decision</th>
+    <th>Result</th>
+    <th>Player Of The Match</th>
+  </tr>
+  {% for match in page.object_list %}
+    <tr>
+        <td>{{match.team1}}</td>
+        <td>{{match.team2}}</td>
+        <td>{{match.venue}}</td>
+        <td>{{match.toss_winner}}</td>
+        <td>{{match.toss_decision}}</td>
+        <td>{{match.winner}}</td>
+        <td>{{match.player_of_match}}</td>
+        <td><a href="{% url 'matchdetails' year match.match_id %}">View Match Details</a></td>
+    </tr>
+  {% endfor %}
+
+</table>
+
+<!--navigation index------------------>
+<nav class="pagination is-centered" role="navigation" aria-label="pagination">
+    <a class="pagination-previous" href="{% url 'seasonyearpage' year prevpageno %}">Previous</a>
+    <a class="pagination-next" href="{% url 'seasonyearpage' year nextpageno %}">Next page</a>
+  <ul class="pagination-list">
+
+        {% for pno in p.page_range %}
+            {% if curpageno == pno %}
+                <li><a class="pagination-link is-current"  aria-current="page">{{p.page(pno).start_index()}}-{{p.page(pno).end_index()}}</a></li>
+            {% else %}
+                <li><a class="pagination-link" href="{% url 'seasonyearpage' year pno %}">{{p.page(pno).start_index()}}-{{p.page(pno).end_index()}}</a></li>
+            {% endif %}
+        {% endif %}
+  </ul>
+</nav>
+
+
+</body>
+</html>

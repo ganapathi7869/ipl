@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Match</title>
+</head>
+<body>
+
+<center>
+<h1>Season {{match.season}}</h1>
+<h2>{{match.team1}} vs {{match.team2}}</h2>
+<h4>{{match.toss_winner}} have won the toss and choose to {{match.toss_decision}} first</h4>
+{% if match.result == "normal" %}
+    <h3>{{match.winner}} won by
+    {% if match.win_by_runs != 0 %}
+        <span> {{match.win_by_runs}} runs</span>
+    {%else%}
+        <span> {{match.win_by_wickets}} wickets</span>
+    {% endif %}
+    </h3>
+{% elif match.result == "tie" %}
+    <h3>Match Tied</h3>
+{% else %}
+    <h3>NO RESULT</h3>
+{% endif %}
+<h4>Man Of The Match: {{match.player_of_match}}</h4>
+
+</center>
+
+
+{% for delivery in delivrs %}
+
+    {% if delivery.ball == 1 %}
+        <br><h5>over{{delivery.over}}:</h5>
+        <span>{{delivery.total_runs}}{% if delivery.player_dismissed %}+W{% endif %}</span>
+    {% else %}
+        <span>{{delivery.total_runs}}{% if delivery.player_dismissed %}+W{% endif %}</span>
+    {% endif %}
+
+{% endfor %}
+
+</body>
+</html>
