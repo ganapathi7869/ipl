@@ -45,7 +45,15 @@ class Deliveries(models.Model):
     batsman_runs=models.IntegerField()
     extra_runs=models.IntegerField()
     total_runs=models.IntegerField()
-    player_dismissed=models.CharField(max_length=30,null=True)
+    player_dismissed =models.CharField(max_length=30,null=True)
     dismissal_kind=models.CharField(max_length=30,null=True)
     fielder=models.CharField(max_length=30,null=True)
 
+#profilepic
+class Userinfo(models.Model):
+    first_name=models.CharField(max_length=30)
+    last_name=models.CharField(max_length=30)
+    username=models.CharField(max_length=50,null=False,blank=False)
+    password=models.CharField(max_length=50,null=False,blank=False)
+
+    profilepic = models.ImageField(upload_to='images/')

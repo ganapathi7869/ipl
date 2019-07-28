@@ -6,15 +6,30 @@ from django.conf.urls import include, url  # For django versions before 2.0
 from django.urls import include, path  # For django versions from 2.0 and up
 from iplapp.views.seasons import *
 from iplapp.views.match import *
+from iplapp.views.auth import *
+from iplapp.views.pointstable import *
+from iplapp.views.teams import *
 
 urlpatterns = [
 
     path('seasons/',Seasonsview.as_view(),name='season2019'),
     path('seasons/<int:year>/',Seasonsview.as_view(),name='seasonyear'),
-    path('seasons/<int:year>/page/<int:pageno>',Seasonsview.as_view(),name='seasonyearpage'),
+    path('seasons/<int:year>/page/<int:pageno>/',Seasonsview.as_view(),name='seasonyearpage'),
 
-    path('seasons/<int:year>/match/<int:matchid>',Matchview.as_view(),name='matchdetails'),
+    path('seasons/<int:year>/pointstable/',Pointstableview.as_view(),name='pointstable'),
 
+    path('teams/',Teamsview.as_view(),name='teams'),
+    path('teamhome/<str:teamname>/',Teamhomeview.as_view(),name='teamhome'),
+    path('teamhome/<str:teamname>/season/<int:year>/',Teamseasonview.as_view(),name='teamseason'),
+
+    path('seasons/<int:year>/match/<int:matchid>/',Matchview.as_view(),name='matchdetails'),
+
+    path('login/', LoginView.as_view(), name='login'),
+    path('signup/', SignupView.as_view(), name='signup'),
+    path('logout/', logout_user, name='logout'),
+
+    # path('seasons/<int:year>/match/<int:matchid>/inning/<int:inningno>/',Matchview.as_view(),name='matchinningdetails'),
+    #
     # path('test_view/',myfirstview,name='myfirstview'),
     #
     # path('api/v1/token/',generateToken.as_view(),name='token_obtain_pair'),

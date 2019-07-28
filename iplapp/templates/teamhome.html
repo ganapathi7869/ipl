@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Home</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bulma.min.css' %}">
+    <style>
+       .login{
+            display: flex;
+            float:right;
+        }
+        .background {
+          background-image:linear-gradient(rgba(0,0,0,0.1),rgba(0,0,0,0.1)) , url("/media/images/{{ teamname }}.png");
+          background-color: #cccccc;
+          background-position: center;
+          height:100vh;
+          overflow:scroll;
+          background-repeat: no-repeat;
+          background-size:contain;
+          background-attachment:fixed;
+        }
+    </style>
+</head>
+<body class="background">
+    <div style="height:50px">
+        {% if request.user.is_authenticated %}
+            <div class="login">
+                <div><a class="button is-primary is-rounded" >hi, {{ request.user.username }}</a></div>
+                {% for user in users %}
+                    <img src="{{ user.profilepic.url }}" style="width:40px;height:40px;border-radius:50%">
+                {% endfor %}
+                <div><a class="button is-primary is-rounded" href="{% url 'logout' %}">Logout</a></div>
+            </div>
+        {% else %}
+            <div class="login">
+                <div><a class="button is-primary is-rounded" href="{% url 'login' %}">Login</a></div>
+                <div><a class="button is-primary is-rounded" href="{% url 'signup' %}">Sign Up</a></div>
+            </div>
+        {% endif %}
+
+    </div>
+    <br>
+
+    <div class="title is-1" style="color:rgb(51, 97, 245);text-align: center;padding:3%;background-color:rgb(51, 245, 190)">
+        <div style="">
+        {{ teamname }}
+            </div>
+    </div>
+
+    <ul style="list-style-type:none;text-align: center;">
+        {% for teamseason in teamseasons %}
+            <li >
+                <a class="button is-success is-rounded" style="border:3px solid green;width:20%;margin:1%" href="{% url 'teamseason' teamname teamseason.season %}">
+                    {{ teamseason.season }} : {{ teamseason.status }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

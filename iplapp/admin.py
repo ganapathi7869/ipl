@@ -5,3 +5,4 @@ from .models import *
 
 admin.site.register(Matches)
 admin.site.register(Deliveries)
+admin.site.register(Userinfo)

@@ -1,10 +1,71 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Match</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bulma.min.css' %}">
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          <!--width: 100%;-->
+        }
+
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+
+       .login{
+            display: flex;
+            float:right;
+        }
+    </style>
+
+    <script>
+
+        function showdeliveries(inning){
+            x=document.getElementById(inning);
+            x.style.display="block";
+            if(inning=="firstinningdeliveries"){
+                document.getElementById("secondinningdeliveries").style.display="none";
+                document.getElementById("secondinningscore").className="";
+                document.getElementById("firstinningscore").className="is-active";
+            }
+            else{
+                document.getElementById("firstinningdeliveries").style.display="none";
+                document.getElementById("secondinningscore").className="is-active";
+                document.getElementById("firstinningscore").className="";
+            }
+        }
+    </script>
+
 </head>
 <body>
+
+<div style="height:50px">
+    {% if request.user.is_authenticated %}
+        <div class="login">
+            <div><a class="button is-primary is-rounded" >hi, {{ request.user.username }}</a></div>
+            {% for user in users %}
+                <img src="{{ user.profilepic.url }}" style="width:40px;height:40px;border-radius:50%">
+            {% endfor %}
+            <div><a class="button is-primary is-rounded" href="{% url 'logout' %}">Logout</a></div>
+        </div>
+    {% else %}
+        <div class="login">
+            <div><a class="button is-primary is-rounded" href="{% url 'login' %}">Login</a></div>
+            <div><a class="button is-primary is-rounded" href="{% url 'signup' %}">Sign Up</a></div>
+        </div>
+    {% endif %}
+
+</div>
 
 <center>
 <h1>Season {{match.season}}</h1>
@@ -24,11 +85,62 @@
     <h3>NO RESULT</h3>
 {% endif %}
 <h4>Man Of The Match: {{match.player_of_match}}</h4>
-
 </center>
 
+<center>
+    <h2 class="title is-4">Top Run Scorers</h2>
+    <table width="50%">
+        <tr>
+            <th>Team</th>
+            <th>Batsman</th>
+            <th>Runs</th>
+        </tr>
+        {% for runscorer in toprunscorers %}
+            <tr>
+            <td>{{runscorer.batting_team}}</td>
+            <td>{{runscorer.batsman}}</td>
+            <td>{{runscorer.runs}}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
-{% for delivery in delivrs %}
+    <h2 class="title is-4">Top Wicket Tackers</h2>
+    <table width="50%">
+        <tr>
+            <th>Team</th>
+            <th>Bowler</th>
+            <th>Wickets</th>
+        </tr>
+        {% for wickettacker in topwickettackers %}
+            <tr>
+            <td>{{wickettacker.bowling_team}}</td>
+            <td>{{wickettacker.bowler}}</td>
+            <td>{{wickettacker.wickets}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</center>
+
+<div class="tabs is-centered" >
+  <ul>
+    <li id="firstinningscore" class="is-active" onclick="showdeliveries('firstinningdeliveries')">
+        <a>
+            <h3>{{team1totalruns.batting_team}} : {{team1totalruns.totalruns}}/{{team1totalwickets.totalwickets}}</h3>&emsp;
+            <h5><pre>Extras : {{team1totalextras.totalextras}}</pre></h5>
+        </a>
+    </li>
+    <li id="secondinningscore" onclick="showdeliveries('secondinningdeliveries')">
+        <a>
+            <h3>{{team2totalruns.batting_team}} : {{team2totalruns.totalruns}}/{{team2totalwickets.totalwickets}}</h3>&emsp;
+            <h5><pre>Extras : {{team2totalextras.totalextras}}</pre></h5>
+        </a>
+    </li>
+  </ul>
+</div>
+
+
+<div id="firstinningdeliveries" >
+{% for delivery in firstinningdelivrs %}
 
     {% if delivery.ball == 1 %}
         <br><h5>over{{delivery.over}}:</h5>
@@ -38,6 +150,20 @@
     {% endif %}
 
 {% endfor %}
+</div>
+
+<div id="secondinningdeliveries" style="display:none">
+    {% for delivery in secondinningdelivrs %}
+
+    {% if delivery.ball == 1 %}
+        <br><h5>over{{delivery.over}}:</h5>
+        <span>{{delivery.total_runs}}{% if delivery.player_dismissed %}+W{% endif %}</span>
+    {% else %}
+        <span>{{delivery.total_runs}}{% if delivery.player_dismissed %}+W{% endif %}</span>
+    {% endif %}
+
+{% endfor %}
+</div>
 
 </body>
 </html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teams</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bulma.min.css' %}">
+    <style>
+       .login{
+            display: flex;
+            float:right;
+        }
+    </style>
+</head>
+<body >
+    <div style="height:50px">
+        {% if request.user.is_authenticated %}
+            <div class="login">
+                <div><a class="button is-primary is-rounded" >hi, {{ request.user.username }}</a></div>
+                {% for user in users %}
+                    <img src="{{ user.profilepic.url }}" style="width:40px;height:40px;border-radius:50%">
+                {% endfor %}
+                <div><a class="button is-primary is-rounded" href="{% url 'logout' %}">Logout</a></div>
+            </div>
+        {% else %}
+            <div class="login">
+                <div><a class="button is-primary is-rounded" href="{% url 'login' %}">Login</a></div>
+                <div><a class="button is-primary is-rounded" href="{% url 'signup' %}">Sign Up</a></div>
+            </div>
+        {% endif %}
+
+    </div>
+    <br>
+
+    <div style="display:flex;flex-wrap:wrap;">
+        {% for team in teams %}
+            {% if team.team1 != "Rising Pune Supergiant" %}
+                <div class="card" style="margin:2%;width:25%;padding:1%">
+                    <div class="card-image" style="text-align:center;"><img src="/media/images/{{ team.team1 }}.png" alt="{{ team.team1 }}" style="width:200px;height:200px;"></div>
+                    <div class="card-content" style="text-align:center;"><a class="button is-rounded is-success" href="{% url 'teamhome' team.team1 %}">Team Home</a></div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+
+</body>
+</html>

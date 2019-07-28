@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>seasons</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bulma.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bulma.min.css' %}">
     <style>
     .dropbtn {
       background-color: #4CAF50;
@@ -45,9 +45,15 @@
     .dropdown:hover .dropbtn {
       background-color: #3e8e41;
     }
+
+    .login{
+        display: inline-block;
+        float: right;
+    }
     </style>
 </head>
-<body>
+<body style="margin:20px">
+
 
 <div class="dropdown">
   <button class="dropbtn">Seasons</button>
@@ -66,9 +72,24 @@
       <a href="{% url 'seasonyear' 2008 %}">2008</a>
   </div>
 </div>
+
+<div class="login" >
+    {% if request.user.is_authenticated %}
+        <a class="button is-primary is-rounded">hi, {{ request.user.username }}</a>
+        {% for user in users %}
+            <img src="{{ user.profilepic.url }}" style="width:40px;height:40px;border-radius:50%">
+        {% endfor %}
+        <a class="button is-primary is-rounded" href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <a class="button is-primary is-rounded" href="{% url 'login' %}">Login</a>
+        <a class="button is-primary is-rounded" href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+
+</div>
+
 <!--page------------------------------------->
 <table style="width:100%">
-  <caption><h1>Season {{year}}</h1></caption>
+  <caption><h1 class="title is-1" style="margin:3%">Season {{year}}</h1></caption>
   <tr>
     <th>Team1</th>
     <th>Team2</th>
@@ -94,21 +115,27 @@
 </table>
 
 <!--navigation index------------------>
-<nav class="pagination is-centered" role="navigation" aria-label="pagination">
+<nav class="pagination is-centered" role="navigation" aria-label="pagination" style="margin:3%">
     <a class="pagination-previous" href="{% url 'seasonyearpage' year prevpageno %}">Previous</a>
     <a class="pagination-next" href="{% url 'seasonyearpage' year nextpageno %}">Next page</a>
   <ul class="pagination-list">
 
-        {% for pno in p.page_range %}
+
+      {% for startind,endind,pno in navigationlist %}
             {% if curpageno == pno %}
-                <li><a class="pagination-link is-current"  aria-current="page">{{p.page(pno).start_index()}}-{{p.page(pno).end_index()}}</a></li>
+                <li><a class="pagination-link is-current"  aria-current="page">{{startind}}-{{endind}}</a></li>
             {% else %}
-                <li><a class="pagination-link" href="{% url 'seasonyearpage' year pno %}">{{p.page(pno).start_index()}}-{{p.page(pno).end_index()}}</a></li>
+                <li><a class="pagination-link" href="{% url 'seasonyearpage' year pno %}">{{startind}}-{{endind}}</a></li>
             {% endif %}
-        {% endif %}
+      {% endfor %}
   </ul>
 </nav>
-
+<br>
+<br>
+<center><a class="button is-link" href="{% url 'pointstable' year %}">Points Table >></a></center>
+<br>
+<br>
+<center><a class="button is-success is-rounded" style="width:20%;font-size:100%;" href="{% url 'teams' %}">All Teams >>></a></center>
 
 </body>
 </html>

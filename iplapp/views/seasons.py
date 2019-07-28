@@ -1,6 +1,6 @@
 from django.views import View
 from django.urls import resolve
-from iplapp.models import Matches
+from iplapp.models import Matches,Userinfo
 from django.shortcuts import render,redirect
 from django.core.paginator import Paginator
 
@@ -20,7 +20,7 @@ class Seasonsview(View):
             #         'year':kwargs['year'],
             #     }
             # )
-            matches = Matches.objects.filter(season=kwargs['year'])
+            matches = Matches.objects.filter(season=kwargs['year']).order_by('id')
             p = Paginator(matches, 8)
             page=p.page(kwargs['pageno'])
             prevpageno=kwargs['pageno']-1
@@ -29,6 +29,12 @@ class Seasonsview(View):
                 prevpageno=1
             if nextpageno > p.num_pages:
                 nextpageno=p.num_pages
+
+            navigationlist=[]
+            for i in p.page_range:
+                t=(p.page(i).start_index(),p.page(i).end_index(),i)
+                navigationlist.append(t)
+            #print(Userinfo.objects.filter(username=request.user.username),'////////////////')
             return render(
                 request,
                 template_name="seasons.html",
@@ -39,6 +45,10 @@ class Seasonsview(View):
                     'nextpageno':nextpageno,
                     'year':kwargs['year'],
 
-                    'p':p,
+                    'navigationlist':navigationlist,
+
+                    'request':request,
+
+                    'users':Userinfo.objects.filter(username=request.user.username),
                 }
             )

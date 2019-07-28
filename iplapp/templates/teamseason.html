@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Season Home</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bulma.min.css' %}">
+    <style>
+        .login{
+            display: flex;
+            float:right;
+        }
+        .background {
+          background-image:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)) , url("/media/images/{{ teamname }}.png");
+          background-position: center;
+          height:100vh;
+          overflow:scroll;
+          background-repeat: no-repeat;
+          background-size:contain;
+          background-attachment:fixed;
+        }
+        th{
+            font-style:italic;
+            font-size:20px;
+        }
+        td{
+            font-style:italic;
+            font-size:18px;
+        }
+
+    </style>
+</head>
+<body class="background">
+    <div style="height:50px">
+        {% if request.user.is_authenticated %}
+            <div class="login">
+                <div><a class="button is-primary is-rounded" >hi, {{ request.user.username }}</a></div>
+                {% for user in users %}
+                    <img src="{{ user.profilepic.url }}" style="width:40px;height:40px;border-radius:50%">
+                {% endfor %}
+                <div><a class="button is-primary is-rounded" href="{% url 'logout' %}">Logout</a></div>
+            </div>
+        {% else %}
+            <div class="login">
+                <div><a class="button is-primary is-rounded" href="{% url 'login' %}">Login</a></div>
+                <div><a class="button is-primary is-rounded" href="{% url 'signup' %}">Sign Up</a></div>
+            </div>
+        {% endif %}
+
+    </div>
+    <br>
+
+    <div class="title is-1" style="color:#fff;text-align: center;text-transform:uppercase;word-spacing:4px;letter-spacing:1px;font-style:italic;padding:3%;">
+        <div style="">
+        {{ teamname }} in {{ year }}
+            </div>
+    </div>
+
+    <table style="width:100%;line-height:200%;background:transparent;color:#fff" class="table">
+      <tr style="background-color:white;">
+        <th>Team1</th>
+        <th>Team2</th>
+        <th>Venue</th>
+        <th>Toss Winner</th>
+        <th>Toss Decision</th>
+        <th>Result</th>
+        <th>Player Of The Match</th>
+      </tr>
+      {% for match in teamseasonmatches %}
+        <tr>
+            <td>{{match.team1}}</td>
+            <td>{{match.team2}}</td>
+            <td>{{match.venue}}</td>
+            <td>{{match.toss_winner}}</td>
+            <td>{{match.toss_decision}}</td>
+            <td>{{match.winner}}</td>
+            <td>{{match.player_of_match}}</td>
+            <td><a href="{% url 'matchdetails' year match.match_id %}" class="button is-primary is-inverted is-outlined is-rounded">View Match Details</a></td>
+        </tr>
+      {% endfor %}
+
+    </table>
+</body>
+</html>
